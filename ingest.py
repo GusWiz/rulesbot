@@ -42,6 +42,10 @@ def chunk_document(text, game_name):
       - "game"     : the game name, e.g. "Catan" (str)
       - "chunk_id" : a unique identifier, e.g. "catan_0", "catan_1" (str)
     """
+    # Error handler
+    if not text:
+        return []
+
     chunk_size = 300
     overlap = 50
     min_length = 50
