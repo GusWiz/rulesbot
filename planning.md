@@ -8,13 +8,15 @@ There are no wrong answers — write enough that you could explain your reasonin
 ## Chunking Strategy
 
 **Chunk size:**
-
+300 characters
 
 **Overlap:**
-
+50 characters
 
 **Why this strategy fits rule book text:**
-
+So, it is big enough for the buffer to have a few sentences. Which will hold enough of the context.
+The overlap, allow family chunks to have context of the previous chunk to not loose context. This helps with chunks being
+a bit similar to one another and knowing the context.
 
 ---
 
