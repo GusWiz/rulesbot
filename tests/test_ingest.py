@@ -3,7 +3,7 @@ from ingest import chunk_document
 def test_empty_text_return_empty_list():
     assert chunk_document("", "Test Game") == []
 
-def test_chunking_basic_behaviro():
+def test_chunking_basic_behavior():
     text = "x" * 700 # text size of the "notes"
     game = "My Game"
     chunks = chunk_document(text, game)
