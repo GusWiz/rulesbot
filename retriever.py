@@ -65,7 +65,7 @@ def retrieve(query, n_results=N_RESULTS):
     Note: _collection.query() returns nested lists (one per query). You only
     have one query, so you'll want index [0] to get the actual results.
     """
-    if _collection.count() == 0:
+    if _collection.count() == 0: # checks if ChromaDB is empty
         return []
 
     results = _collection.query(
