@@ -68,5 +68,21 @@ def retrieve(query, n_results=N_RESULTS):
     if _collection.count() == 0:
         return []
 
-    # Your implementation here.
-    return []
+    results = _collection.query(
+        query_texts=[query],
+        n_results=n_results, 
+        include=["documents", "metadatas", "distances"]
+    )
+
+    docs = results.get("documents", [[]])[0]
+    metas = results.get("metadatas", [[]])[0]
+    dists = results.get("distances", [[]])[0]
+
+    relevant_chunks = []
+    for i in range(len(docs)):
+        text = docs[i]
+        game = metas[i].get("game") if i < len(metas) and isinstance(metas[i], dict) else None
+        distance = dists[i] if i < len(dists) else None
+        relevant_chunks.append({"text": text,"game": game,"distance": distance})
+
+    return relevant_chunks
