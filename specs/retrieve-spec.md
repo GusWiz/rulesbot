@@ -112,14 +112,14 @@ Relevance threshold: We will not apply a hard distance cutoff in `retrieve()`. R
 **Test query and top result returned:**
 
 ```
-Query: [your test query]
-Top result game: [game name]
-Distance score: [score]
-Does it make sense? [yes / no / explain]
+Query: What happens when a 7 is rolled?
+Top result game: Catan
+Distance score: 0.453
+Does it make sense? Yes, expected results returned the correct answer in the top result.
 ```
 
 **One thing about the query results that surprised you:**
 
 ```
-[your answer here]
+That it did get the correct rule at least for catan.
 ```
