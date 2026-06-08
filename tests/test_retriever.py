@@ -48,3 +48,19 @@ def test_handles_missing_game_key(monkeypatch):
     monkeypatch.setattr(retriever, "_collection", DummyCollectionMissingMeta())
     res = retriever.retrieve("query", n_results=1)
     assert res == [{"text": "only doc", "game": None, "distance": 0.5}]
+
+
+def test_live_style_using_monkeypatch(monkeypatch):
+    class Dummy:
+        def count(self): return 2
+        def query(self, query_texts, n_results, include):
+            return {
+                "documents": [["docA", "docB"]],
+                "metadatas": [[{"game":"Catan"}, {"game":"Uno"}]],
+                "distances": [[0.12, 0.34]],
+            }
+    monkeypatch.setattr(retriever, "_collection", Dummy())
+    res = retriever.retrieve("roll a 7", n_results=2)
+    assert len(res) == 2
+    assert res[0]["text"] == "docA"
+    assert "game" in res[0] and "distance" in res[0]
