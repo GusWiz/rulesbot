@@ -85,4 +85,8 @@ def retrieve(query, n_results=N_RESULTS):
         distance = dists[i] if i < len(dists) else None
         relevant_chunks.append({"text": text,"game": game,"distance": distance})
 
+    # TEMP debug: print retrieved chunks to verify retrieval before UI testing
+    for chunk in relevant_chunks:
+        print(f"[{chunk['game']}] (dist: {chunk['distance']:.3f}) {chunk['text'][:80]}...")
+
     return relevant_chunks
