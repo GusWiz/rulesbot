@@ -99,7 +99,7 @@ I am sorry, but the loaded rules do not contain information to answer your quest
 *`retrieved_chunks` may include chunks with high distance scores (weak relevance). Will you filter these out before building context, pass them all in, or handle them another way? What are the tradeoffs?*
 
 ```
-I would pass them just incase the answer is there and so the user receives an answer. However, if all chunks distance are weak relevance the output should contain a confidence score indicating low confidence. This will provide a wrong answer but its better than nothing.
+We are going to omit any chunks from the relevant chunks that distance value is greater than 0.7.
 ```
 
 ---
@@ -109,7 +109,12 @@ I would pass them just incase the answer is there and so the user receives an an
 *Describe how you will structure the messages list for the API call — what goes in the system message vs. the user message?*
 
 ```
-[query, chunks]
+The structure of the message list for the API call is going to follow:
+messages = [
+    {"role": "system", "content": SYSTEM_PROMPT},
+    {"role": "user", "content": f"{formatted_xml_context}\n\nQuery: {query}"}
+]
+
 ```
 
 ---
