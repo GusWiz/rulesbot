@@ -35,5 +35,47 @@ def generate_response(query, retrieved_chunks):
             "Try rephrasing your question — or check that your ingestion pipeline is working."
         )
 
-    # Your implementation here.
-    return "⚙️ Response generation not yet implemented. Complete Milestone 3 to activate answers."
+    # Format chunks for LLM
+    filtered_chunk = []
+    for chunk in retrieved_chunks:
+        if chunk.get("distance", 0) <= 0.7:
+            filtered_chunk.append(chunk)
+    
+    # Check filtered chunks
+    if not filtered_chunk:
+        return "I am sorry, but the loaded rules do not contain information to answer your question"
+    
+    xml_elements = ["<retrieved_context>"]
+    for chunk in filtered_chunk:
+        game_name = chunk.get("game", "unknown game")
+        text = chunk.get("text", "").strip()
+        xml_elements.append(f"<chunk gameName={game_name}>\n{text}\n</chunk>")
+    xml_elements.append("</retrieved_context>")
+
+    formatted_xml_context = "\n".join(xml_elements)
+    system_prompt = (
+        "You are a strict QA assistant. Answer the user's question using ONLY the text provided "
+        "within the <retrieved_context> XML tags. Do not use your own pre-trained knowledge or "
+        "make assumptions. If the text does not contain the answer, you must output the exact "
+        "fallback string: [I am sorry, but the loaded rules do not contain information to answer "
+        "your question.]. Do not speculate.\n\n"
+        "Every answer must explicitly state the game it belongs to. Format the output by prefixing "
+        "the answer with the game name in brackets, like this: [Game Name] - Your answer here....")
+    
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": f"{formatted_xml_context}\n\nQuery: {query}"}
+    ]
+
+    try:
+        chat_completion = _client.chat.completions.create(
+            model=LLM_MODEL,
+            messages=messages,
+            temperature=0.0, # Zero temperature ensures maximum strict adherence to the context
+        )
+
+        response_text = chat_completion.choices[0].message.content.strip()
+        return response_text
+    
+    except Exception as e:
+        return f"An error occured when calling the LLM model error: {str(e)}"
