@@ -104,3 +104,15 @@ python app.py
 | Risk | `docs/risk.txt` |
 | Ticket to Ride | `docs/ticket_to_ride.txt` |
 | Uno | `docs/uno.txt` |
+
+
+## Optional/Future Challanges:
+
+
+Add a ninth game. Pick a board game your group knows well and write a rules summary for it — drop a .txt file in /docs and restart the app. Does retrieval quality change for questions about that game vs. the pre-loaded ones? Does the quality of the rules document you wrote affect the answers?
+
+
+Break your chunking strategy on purpose. Try two extreme configurations — very small chunks (50–100 characters) and very large chunks (1,000+ characters). Ask the same question with each and compare what you get. Where does each approach fail, and why? Create a planning.md file at the repo root and write down your observations there — it's a good habit to document design experiments alongside the code they inform.
+
+
+Build a custom eval agent. Instead of manually spot-checking RulesBot's answers, write a small script that automatically evaluates retrieval quality. Give it a list of question-answer pairs where you know the correct answer and which game it comes from, then have it run each query, check whether the right game shows up in the top results, and report a retrieval accuracy score. This is a simplified version of how production RAG systems are evaluated — and it's a good use of an agent loop if you want to push further and have it log failures for human review.
