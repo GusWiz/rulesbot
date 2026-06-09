@@ -42,7 +42,24 @@ Returns a fallback string (not an error) when `retrieved_chunks` is empty.
 *How will you format the retrieved chunks before passing them to the LLM? Describe the structure — not the code. Consider: will you label chunks by game? Include distance scores? Separate chunks with delimiters?*
 
 ```
-[your answer here]
+Note: Common delimiters include: 
+- Newline characters (\n\n)
+- Dash lines (---)
+-XML-style tags (e.g., <chunk> ... </chunk>)
+
+The retrieved chunks will be aggregated into a single context string using structured XML-style delimiters to isolate each text segment. 
+
+Each segment will be wrapped in a `<chunk>` tag containing a `game` attribute to explicitly pass the source metadata to the LLM. Distance scores will be intentionally omitted from the prompt text to prevent token waste and numerical confusion, relying instead on the inherent ordering of the list.
+
+Format Structure:
+<retrieved_context>
+<chunk game="Game Name A">
+Text chunk content goes here...
+</chunk>
+<chunk game="Game Name B">
+Text chunk content goes here...
+</chunk>
+</retrieved_context>
 ```
 
 ---
@@ -52,7 +69,7 @@ Returns a fallback string (not an error) when `retrieved_chunks` is empty.
 *Write the exact system prompt instruction you will use to prevent the model from answering beyond the retrieved text. This is the most important design decision in this function.*
 
 ```
-[your answer here]
+You are a strict QA assistant. Answer the user's question using ONLY the text provided within the <retrieved_context> XML tags. Do not use your own pre-trained knowledge or make assumptions. If the text does not contain the answer, you must output the exact fallback string: [I am sorry, but the loaded rules do not contain information to answer your question.]. Do not speculate.
 ```
 
 ---
@@ -62,7 +79,7 @@ Returns a fallback string (not an error) when `retrieved_chunks` is empty.
 *Write the exact instruction you will use to tell the model to identify which game its answer comes from.*
 
 ```
-[your answer here]
+Every answer must explicitly state the game it belongs to. Format the output by prefixing the answer with the game name in brackets, like this: [Game Name] - Your answer here....
 ```
 
 ---
@@ -72,7 +89,7 @@ Returns a fallback string (not an error) when `retrieved_chunks` is empty.
 *What should the response say when the answer isn't found in the loaded rule books? Write the exact fallback message.*
 
 ```
-[your answer here]
+I am sorry, but the loaded rules do not contain information to answer your question.
 ```
 
 ---
@@ -82,7 +99,7 @@ Returns a fallback string (not an error) when `retrieved_chunks` is empty.
 *`retrieved_chunks` may include chunks with high distance scores (weak relevance). Will you filter these out before building context, pass them all in, or handle them another way? What are the tradeoffs?*
 
 ```
-[your answer here]
+I would pass them just incase the answer is there and so the user receives an answer. However, if all chunks distance are weak relevance the output should contain a confidence score indicating low confidence. This will provide a wrong answer but its better than nothing.
 ```
 
 ---
@@ -92,7 +109,7 @@ Returns a fallback string (not an error) when `retrieved_chunks` is empty.
 *Describe how you will structure the messages list for the API call — what goes in the system message vs. the user message?*
 
 ```
-[your answer here]
+[query, chunks]
 ```
 
 ---
